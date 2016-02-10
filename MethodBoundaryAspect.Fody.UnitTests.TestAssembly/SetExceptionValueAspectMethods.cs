@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MethodBoundaryAspect.Fody.UnitTests.TestAssembly.Aspects;
 
 namespace MethodBoundaryAspect.Fody.UnitTests.TestAssembly
@@ -17,6 +18,20 @@ namespace MethodBoundaryAspect.Fody.UnitTests.TestAssembly
         public void InstanceMethodCall()
         {
             throw new InvalidOperationException("InstanceMethodCall");
+        }
+
+        [SetExceptionValueAspect]
+        public async Task AsyncInstanceMethodCall()
+        {
+            await Task.Delay(1);
+            throw new InvalidOperationException("AsyncInstanceMethodCall");
+        }
+
+        [SetExceptionValueAspect]
+        public async Task AsyncStaticMethodCall()
+        {
+            await Task.Delay(1);
+            throw new InvalidOperationException("AsyncStaticMethodCall");
         }
     }
 }

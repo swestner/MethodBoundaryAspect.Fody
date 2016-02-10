@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace MethodBoundaryAspect.Fody.UnitTests
 {
@@ -42,6 +43,23 @@ namespace MethodBoundaryAspect.Fody.UnitTests
         public object InvokeMethod(string className, string methodName, params object[] arguments)
         {
             return InvokeMethodWithResultClass(className, className, methodName, arguments);
+        }
+
+        public Task InvokeMethodAsync(string className, string methodName, params object[] arguments)
+        {
+            var type = _assembly.GetType(className, true);
+            var methodInfo = type.GetMethod(methodName);
+            if (methodInfo == null)
+                throw new MissingMethodException(
+                    string.Format("Method '{0}' in class '{1}' in assembly '{2}' not found.",
+                        methodName,
+                        className,
+                        _assembly.FullName));
+
+            var instance = Activator.CreateInstance(type);
+            var result = methodInfo.Invoke(instance, arguments);
+
+            return result as Task;
         }
 
         public object GetLastResult(string className)

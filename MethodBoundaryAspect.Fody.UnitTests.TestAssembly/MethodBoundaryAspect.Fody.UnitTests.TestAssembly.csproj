@@ -48,6 +48,7 @@
     <Compile Include="Aspects\SetClassNameAspect.cs" />
     <Compile Include="Aspects\SetConstructorArgumentPrimitivesAspect.cs" />
     <Compile Include="Aspects\SetConstructorArgumentReferencesAspect.cs" />
+    <Compile Include="Aspects\RethrowExceptionValueAspect.cs" />
     <Compile Include="Aspects\SetExceptionValueAspect.cs" />
     <Compile Include="Aspects\SetInstanceValueAspect.cs" />
     <Compile Include="Aspects\SetMethodExecutionTagValueAspect.cs" />

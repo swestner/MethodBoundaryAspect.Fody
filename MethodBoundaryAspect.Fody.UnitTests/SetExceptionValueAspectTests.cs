@@ -3,6 +3,7 @@ using System.Reflection;
 using FluentAssertions;
 using MethodBoundaryAspect.Fody.UnitTests.TestAssembly;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace MethodBoundaryAspect.Fody.UnitTests
 {
@@ -50,6 +51,25 @@ namespace MethodBoundaryAspect.Fody.UnitTests
 
             // Act
             Action call = () => AssemblyLoader.InvokeMethod(TestClassType.FullName, testMethodName);
+
+            // Assert
+            call.ShouldThrow<TargetInvocationException>()
+                .WithInnerException<InvalidOperationException>()
+                .WithInnerMessage(testMethodName);
+
+            var result = AssemblyLoader.GetLastResult(TestClassType.FullName);
+            result.Should().BeOfType<InvalidOperationException>();
+        }
+
+        [Test]
+        public async Task IfAsyncInstanceMethodIsCalled_ThenTheOnMethodBoundaryAspectShouldBeCalled()
+        {
+            // Arrange
+            const string testMethodName = "AsyncInstanceMethodCall";
+            WeaveAssemblyMethodAndLoad(TestClassType, testMethodName);
+
+            // Act            
+            Func<Task> call = async () => await AssemblyLoader.InvokeMethodAsync(TestClassType.FullName, testMethodName);
 
             // Assert
             call.ShouldThrow<TargetInvocationException>()
